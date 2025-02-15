@@ -10,7 +10,8 @@
     "start": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "deleteDB": "node dev-data/data/import-dev-data.js --delete",
-    "importDB": "node dev-data/data/import-dev-data.js --import"
+    "importDB": "node dev-data/data/import-dev-data.js --import",
+    "debug": "ndb server.js"
   },
   "author": "Kenan Gunen",
   "license": "ISC",
@@ -20,8 +21,9 @@
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.5",
     "morgan": "^1.10.0",
-    "ndb": "^1.1.5",
     "nodemon": "^3.1.9",
+    "puppeteer": "^24.2.0",
+    "puppeteer-core": "^24.2.0",
     "slugify": "^1.6.6",
     "validator": "^13.12.0"
   },

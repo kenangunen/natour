@@ -1,11 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
+
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-//* 1) Middlewares
+//* 1) MIDDLEWARES
 if (process.env.NODE_ENV === 'development') {
   // istekleri loglamak için kullanılır.
   app.use(morgan('dev'));
@@ -24,11 +27,6 @@ app.use(express.json());
  */
 app.use(express.static(`${__dirname}/public`));
 
-app.use((req, res, next) => {
-  console.log('Hello from the middleware 👋');
-  next();
-});
-
 /**
  * Bu middleware ile gelen isteklere date bilgisi yazdırdık.
  * Ve bunu getAllTours (requestedAt) ile client'a gönderdik.
@@ -38,12 +36,23 @@ app.use((req, res, next) => {
   next();
 });
 
-//* 3) ROUTES
+//* 2) ROUTES
 /**
  * /api/v1/tours rout'unu tourRouter middleware'ine değişkenine bağladık.
  * Artık tourRouter'ın kendi alt router'larını tanımlayabiliriz.
  */
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+/**
+ * Belirtilen hiçbir router'a uymayan istekler için 404 hatası döndürür.
+ * Tüm raouter'larına altına yazarak hiç birine girmeyenlerin buraya girmesini sağladık.
+ *  */
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// Error handling middleware
+app.use(globalErrorHandler);
 
 module.exports = app;
