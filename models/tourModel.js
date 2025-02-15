@@ -83,7 +83,7 @@ const tourSchema = new mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
+  }
 );
 
 // durationWeeks teknik olarak db'nin bir parçası değil.
