@@ -9,8 +9,8 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a name'],
       unique: true,
       trim: true,
-      maxlength: [40, 'A tour name must have less or equal then 40 chracters'],
-      minlength: [10, 'A tour name must have more or equal then 10 chracters'],
+      maxlength: [40, 'A tour name must have less or equal than 40 characters'],
+      minlength: [10, 'A tour name must have more or equal than 10 characters'],
       // validate: [validator.isAlpha, 'Tour name must only contain characters'],
     },
     slug: String,
@@ -27,14 +27,14 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a difficulty'],
       enum: {
         values: ['easy', 'medium', 'difficult'],
-        message: 'Difficulty is either: easy, medium, difficult',
+        message: 'Difficulty is either: easy, medium, or difficult',
       },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
       min: [1, 'Rating must be above 1.0'],
-      max: [5, 'Rating must be above 5.0'],
+      max: [5, 'Rating must be below 5.0'],
     },
     ratingsQuantity: {
       type: Number,
@@ -46,13 +46,12 @@ const tourSchema = new mongoose.Schema(
     },
     priceDiscount: {
       type: Number,
-      // custom validation
       validate: {
         validator: function (val) {
-          // this only point to current doc on NEW doucment creation
+          // This only points to current doc on NEW document creation
           return val < this.price;
         },
-        message: 'Discount price ({VALUE}) should be below regular price ',
+        message: 'Discount price ({VALUE}) should be below regular price',
       },
     },
     summary: {
@@ -72,7 +71,7 @@ const tourSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now(),
-      select: false, // response'da gitmemesini sağlar.
+      select: false,
     },
     startDates: [Date],
     secretTour: {
@@ -86,39 +85,20 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
-// durationWeeks teknik olarak db'nin bir parçası değil.
+// Virtual property for duration in weeks
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-// DOCUMENT MIDDLEWARE: runs before .save() and .create
+// DOCUMENT MIDDLEWARE: runs before .save() and .create()
 tourSchema.pre('save', function (next) {
-  /**
-   * slugify paketi
-     "Test tour 3" -> "test-tour-3" dönüştürdü.
-   */
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
-// tourSchema.pre('save', function (next) {
-//   console.log('Will save document');
-//   next();
-// });
-
-// tourSchema.post('save', function (doc, next) {
-//   console.log(doc);
-//   next();
-// });
-
-// QUERY MIDDLEWARE
-/**
- * Bu örnekte secretTour:true olanları göndermiyoruz.
- */
+// QUERY MIDDLEWARE: filters out secret tours
 tourSchema.pre(/^find/, function (next) {
-  //find ile başlayan tüm sorgular
   this.find({ secretTour: { $ne: true } });
-
   this.start = Date.now();
   next();
 });
@@ -128,12 +108,9 @@ tourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
-// AGGRETION MIDDLEWARE
-// secretTour'ları aggregate'lerden de çıkarmamız gerek.
+// AGGREGATION MIDDLEWARE: filters out secret tours
 tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-
-  // console.log(this.pipeline());
   next();
 });
 
