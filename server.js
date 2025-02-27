@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
  * Burada mongoose.connect hatasını ele almış olduk.
  */
 process.on('unhandledRejection', (err) => {
-  console.log('UNHANDLER REJECTION! 💥 Shutting down...');
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
   console.log(err.name, err.message);
   process.exit(1);
 });
