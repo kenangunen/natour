@@ -1,33 +1,33 @@
 {
-	"id": "06b6277e-0e18-407b-9562-1d0c08c47ce9",
-	"name": "Dev: Natours",
-	"values": [
-		{
-			"key": "URL",
-			"value": "127.0.0.1:3000/",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "jwt",
-			"value": "",
-			"type": "any",
-			"enabled": true
-		},
-		{
-			"key": "email",
-			"value": "",
-			"type": "any",
-			"enabled": true
-		},
-		{
-			"key": "password",
-			"value": "",
-			"type": "any",
-			"enabled": true
-		}
-	],
-	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2025-02-28T09:30:30.332Z",
-	"_postman_exported_using": "Postman/11.34.4"
+  "id": "06b6277e-0e18-407b-9562-1d0c08c47ce9",
+  "name": "Dev: Natours",
+  "values": [
+    {
+      "key": "URL",
+      "value": "127.0.0.1:3000/",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "jwt",
+      "value": "",
+      "type": "any",
+      "enabled": true
+    },
+    {
+      "key": "email",
+      "value": "",
+      "type": "any",
+      "enabled": true
+    },
+    {
+      "key": "password",
+      "value": "",
+      "type": "any",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-02-28T09:30:30.332Z",
+  "_postman_exported_using": "Postman/11.34.4"
 }
