@@ -113,7 +113,3 @@ We welcome contributions! If you'd like to contribute to this project, please op
 ## License
 
 This project is licensed under the **MIT License**.
-
-```
-
-```
