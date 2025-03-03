@@ -48,7 +48,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
-  // 1) Getting token and check of it's there
+  // 1) Getting token and check if it's there
   let token;
   if (
     req.headers.authorization &&
@@ -56,6 +56,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
+
   if (!token) {
     return next(
       new AppError('You are not logged in! Please log in to get access.', 401)
@@ -137,8 +138,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     return next(
-      new AppError('There was an error sending the email. Try again later!'),
-      500
+      new AppError(
+        'There was an error sending the email. Try again later!',
+        500
+      )
     );
   }
 });
