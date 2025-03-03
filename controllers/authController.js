@@ -112,11 +112,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 
   // 2) Generate the random reset token
-  const resetTokan = user.createPasswordResetToken();
+  const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
   // 3) Send it to user's email
-  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetTokan}`;
+  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
@@ -168,7 +168,32 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 3) Update changedPasswordAt property for the user
 
   // 4) Log the user in, send JWT
-  const token = user.createJWT(user._id);
+  const token = user.createJWT();
+
+  res.status(200).json({
+    status: 'success',
+    token,
+  });
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from collection
+  // req.user is coming from protect middleware
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2) Check if POSTed current password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('Your current password is wrong.', 401));
+  }
+
+  // 3) If so, update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+  //User.findByIdAndUpdate() will NOT work as intended! Because of the pre-save middleware in userModel.js. So we have to use save() method.
+
+  // 4) Log user in, send JWT
+  const token = user.createJWT();
 
   res.status(200).json({
     status: 'success',
