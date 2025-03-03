@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { promisify } = require('util');
 const mongoose = require('mongoose');
 const validator = require('validator');
@@ -41,6 +42,8 @@ const userSchema = new mongoose.Schema({
     },
   },
   passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -52,6 +55,14 @@ userSchema.pre('save', async function (next) {
 
   // Delete passwordConfirm field
   this.passwordConfirm = undefined;
+  next();
+});
+
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  // 1 second before the token is created to ensure that the token is always created after the password is changed
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
@@ -84,6 +95,19 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 
 userSchema.statics.verifyJWT = function (token) {
   return promisify(jwt.verify)(token, process.env.JWT_SECRET);
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 };
 
 const User = mongoose.model('User', userSchema);
