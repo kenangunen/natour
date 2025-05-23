@@ -34,12 +34,22 @@ const createSendToken = (user, statusCode, res) => {
   user.password = undefined;
   user.passwordConfirm = undefined;
 
-  res.status(statusCode).json({
-    status: 'success',
-    data: {
-      user: user,
-    },
-  });
+  if (process.env.NODE_ENV === 'production') {
+    res.status(statusCode).json({
+      status: 'success',
+      data: {
+        user: user,
+      },
+    });
+  } else {
+    res.status(statusCode).json({
+      status: 'success',
+      token,
+      data: {
+        user: user,
+      },
+    });
+  }
 };
 
 exports.signup = catchAsync(async (req, res, next) => {

@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -8,29 +9,28 @@ const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-//* 1) MIDDLEWARES
+//* 1) GLOBAL MIDDLEWARES
 if (process.env.NODE_ENV === 'development') {
   // istekleri loglamak için kullanılır.
   app.use(morgan('dev'));
 }
 
-/**
- * Express ile oluşturulan Node.js uygulamalarında gelen isteklerin gövdesini (body)
- * JSON formatında ayrıştırmak (parse etmek) için kullanılır.
- */
+const limiter = rateLimit({
+  max: process.env.RATE_LIMIT_MAX_REQUESTS,
+  windowMs: process.env.RATE_LIMIT_WINDOW_MS,
+  message: 'Too many requests from this IP, please try again in an hour',
+});
+
+// Limit requests from the same IP address
+app.use('/api', limiter);
+
+// Middleware to parse incoming JSON requests
 app.use(express.json());
-/**
- * BU şekilde proje dizinindeki static dosyalara tarayıcıdan erişilebilir.
- * public dosyasındaki statik dosyalara erişmek için kullanılan middleware.
- * Örneğin bu middleware sayesinde http://127.0.0.1:3000/overview.html url'i overview.html
- * dosyasını tarayıcada görüntüleyebildik.
- */
+
+// Middleware to serve static files
 app.use(express.static(`${__dirname}/public`));
 
-/**
- * Bu middleware ile gelen isteklere date bilgisi yazdırdık.
- * Ve bunu getAllTours (requestedAt) ile client'a gönderdik.
- * */
+// Middleware to log the request time
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
