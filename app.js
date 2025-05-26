@@ -26,8 +26,8 @@ if (process.env.NODE_ENV === 'development') {
 
 // Limit requests from the same IP
 const limiter = rateLimit({
-  max: process.env.RATE_LIMIT_MAX_REQUESTS,
-  windowMs: process.env.RATE_LIMIT_WINDOW_MS,
+  max: 100,
+  windowMs: 60 * 60 * 1000, // 1 hour
   message: 'Too many requests from this IP, please try again in an hour',
 });
 
@@ -74,7 +74,7 @@ app.use((req, res, next) => {
  */
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/reviews', reviewRouter);
+// app.use('/api/v1/reviews', reviewRouter);
 
 /**
  * Belirtilen hiçbir router'a uymayan istekler için 404 hatası döndürür.
