@@ -1,7 +1,7 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
-const reviewController = require('../controllers/reviewController');
+const reviewRouter = require('./reviewRoutes');
 
 /**
  * express.Router() fonksyionu yeni bir instance yaratır.
@@ -10,6 +10,9 @@ const reviewController = require('../controllers/reviewController');
  * kullanılır.
  */
 const router = express.Router();
+
+// Tüm review işlemlerini reviewRouter'a yönlendirdik.
+router.use('/:tourId/reviews', reviewRouter);
 
 /**
  * Alias
@@ -36,14 +39,6 @@ router
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
     tourController.deleteTour
-  );
-
-router
-  .route('/:tourId/reviews')
-  .post(
-    authController.protect,
-    authController.restrictTo('user'),
-    reviewController.createReview
   );
 
 module.exports = router;
