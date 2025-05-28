@@ -5,8 +5,9 @@ const authController = require('../controllers/authController');
 // Merge params allows us to access the tourId from the parent route
 const router = express.Router({ mergeParams: true });
 
+router.use(authController.protect); // Protect all routes after this line
+
 router.route('/').get(reviewController.getAllReviews).post(
-  authController.protect,
   authController.restrictTo('user'),
   reviewController.setTourUserIds, // if the tourId is not provided in the body, it will be set from the params
   reviewController.createReview
@@ -15,7 +16,13 @@ router.route('/').get(reviewController.getAllReviews).post(
 router
   .route('/:id')
   .get(reviewController.getReview)
-  .patch(reviewController.updateReview)
-  .delete(reviewController.deleteReview);
+  .patch(
+    authController.restrictTo('user', 'admin'),
+    reviewController.updateReview
+  )
+  .delete(
+    authController.restrictTo('user', 'admin'),
+    reviewController.deleteReview
+  );
 
 module.exports = router;
