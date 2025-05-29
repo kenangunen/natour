@@ -9,8 +9,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
-    "deleteTourDB": "node dev-data/data/import-dev-data.js --delete",
-    "importTourDB": "node dev-data/data/import-dev-data.js --import",
+    "deleteDB": "node dev-data/data/import-dev-data.js --delete",
+    "importDB": "node dev-data/data/import-dev-data.js --import",
     "debug": "nodemon --inspect server.js",
     "debug:prod": "NODE_ENV=production nodemon --inspect server.js"
   },
