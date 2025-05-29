@@ -1,4 +1,3 @@
-````markdown
 # Natours
 
 Natours is a tour booking application designed for nature tours. The project is built using **Node.js**, **Express**, **MongoDB**, and **Mongoose**.
@@ -10,7 +9,6 @@ Natours is a tour booking application designed for nature tours. The project is 
 - User roles and authorization
 - Tour booking system
 - Tour reviews and ratings
-- Image upload and processing
 
 ## Installation
 
@@ -19,9 +17,8 @@ Follow these steps to get the project up and running:
 ### 1. Clone the repository:
 
 ```sh
-git clone https://github.com/yourusername/natours.git
+git clone https://github.com/kenangunen/natour
 ```
-````
 
 ### 2. Navigate to the project directory:
 
@@ -79,12 +76,6 @@ npm run dev
 - `PATCH /api/v1/tours/:id`: Update a tour (Admin only).
 - `DELETE /api/v1/tours/:id`: Delete a tour (Admin only).
 
-### Bookings
-
-- `POST /api/v1/bookings/checkout-session/:tourId`: Create a checkout session for a tour.
-- `GET /api/v1/bookings`: Get all bookings (Admin only).
-- `GET /api/v1/bookings/:id`: Get a single booking (Admin only).
-
 ### Reviews
 
 - `GET /api/v1/reviews`: Get all reviews.
@@ -103,6 +94,9 @@ To test the API endpoints easily, you can use the Postman collection and environ
 3. Once the collection is imported, go to the **Environments** tab on the top right of Postman.
 4. Click on the **Settings** (gear) icon, then select **Import** and choose the `postman/api-environment.json` file to import your environment settings.
 5. After both the collection and environment are imported, you can start testing the API endpoints.
+
+👉 **Alternatively, you can view and use the API documentation directly via Postman using this link:**  
+[https://documenter.getpostman.com/view/4091504/2sB2qfAKan](https://documenter.getpostman.com/view/4091504/2sB2qfAKan)
 
 Enjoy testing your APIs with Postman!
 
